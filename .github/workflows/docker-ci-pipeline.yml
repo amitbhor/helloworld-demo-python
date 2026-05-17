@@ -8,6 +8,12 @@ jobs:
       - name: Clone the code
         uses: actions/checkout@v6
       
+      - name: Run hadolint for dockrfile
+        uses: hadolint/hadolint-action@v3.1.0
+        with:
+          dockerfile: Dockerfile
+          ignore: DL4000
+
       - name: Docker Build
         run: docker build -t ${{ vars.DOCKERHUB_USERNAME }}/helloworld-python:v1 .
 
