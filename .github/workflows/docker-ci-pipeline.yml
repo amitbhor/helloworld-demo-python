@@ -22,7 +22,7 @@ jobs:
       - name: SonarQube Scan
         uses: SonarSource/sonarqube-scan-action@v8.1.0
         env:
-         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
       - name: Docker Build
         run: docker build -t ${{ vars.DOCKERHUB_USERNAME }}/helloworld-python:v1 .
