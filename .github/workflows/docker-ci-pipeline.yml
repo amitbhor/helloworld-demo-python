@@ -29,6 +29,11 @@ jobs:
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
 
+      - name: ZAP Scan
+        uses: zaproxy/action-full-scan@v0.13.0
+        with:
+          target: 'https://ginandjuice.shop/'
+
       - name: Docker Build
         run: docker build -t ${{ vars.DOCKERHUB_USERNAME }}/helloworld-python:v1 .
 
