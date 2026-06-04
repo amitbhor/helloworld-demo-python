@@ -24,6 +24,11 @@ jobs:
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
+      - name: Run Snyk to check for vulnerabilities
+        uses: snyk/actions/python@master
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+
       - name: Docker Build
         run: docker build -t ${{ vars.DOCKERHUB_USERNAME }}/helloworld-python:v1 .
 
