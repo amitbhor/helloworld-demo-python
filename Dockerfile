@@ -27,4 +27,4 @@ EXPOSE 8080
 ENTRYPOINT ["python3"]
 
 # CMD provides the default argument (runs app.py)
-CMD
+CMD ["app.py"] 
