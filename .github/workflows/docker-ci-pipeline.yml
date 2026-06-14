@@ -1,6 +1,11 @@
 name: Docker CI Pipeline
 run-name: ${{ github.actor }} is running on Docker CI Pipeline
 on : [push]
+permissions:
+  issues: write
+  contents: read
+  security-events: write
+  
 jobs:
   docker-build-push:
     runs-on: ubuntu-latest
@@ -30,9 +35,16 @@ jobs:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
 
       - name: ZAP Scan
-        uses: zaproxy/action-full-scan@v0.13.0
+        uses: zaproxy/action-full-scan@3c58388149901b9a03b7718852c5ba889646c27c
         with:
-          target: 'https://ginandjuice.shop/'
+          target: 'https://ginandjuice.shop/'   #replace with alternate URL until app is live
+          cmd_options: "-a"
+
+      - name: Upload ZAP Report
+        uses: actions/upload-artifact@v4
+        with:
+          name: zap-full-report
+          path: ./zap-full-scan-report.html
 
       - name: Docker Build
         run: docker build -t ${{ vars.DOCKERHUB_USERNAME }}/helloworld-python:v1 .
