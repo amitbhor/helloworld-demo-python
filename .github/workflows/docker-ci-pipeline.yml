@@ -1,10 +1,6 @@
 name: Docker CI Pipeline
 run-name: ${{ github.actor }} is running on Docker CI Pipeline
 on : [push]
-permissions:
-  issues: write
-  contents: read
-  security-events: write
   
 jobs:
   docker-build-push:
