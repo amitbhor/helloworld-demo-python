@@ -10,17 +10,9 @@ LABEL description="Demo Python App"
 # Set working directory (auto-creates /app if it doesn’t exist)
 WORKDIR /app
 
-# Install dependencies securely
-# --no-cache-dir avoids caching sensitive files
-# --only-binary :all: prevents execution of setup.py scripts
-# requirements.txt should pin exact versions for reproducibility
-COPY requirements.txt /app/
-RUN pip install --no-cache-dir --only-binary :all: -r requirements.txt
-
-# Copy only the source code (not the entire repo)
+# Copy only the files you actually have
 # Helps avoid bringing in .git, logs, or secrets
 COPY app.py /app/
-COPY src/ /app/src/
 
 # Create a non-root user for security
 # Running as root inside containers is a common vulnerability
