@@ -10,13 +10,12 @@ LABEL description="Demo Python App"
 # Set working directory (auto-creates /app if it doesn’t exist)
 WORKDIR /app
 
-# Copy dependency list first for better caching
-# This way Docker only re-installs dependencies if requirements.txt changes
+# Install dependencies securely
+# --no-cache-dir avoids caching sensitive files
+# --only-binary :all: prevents execution of setup.py scripts
+# requirements.txt should pin exact versions for reproducibility
 COPY requirements.txt /app/
-
-# Install Python dependencies securely
-# --no-cache-dir prevents caching sensitive files
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir --only-binary :all: -r requirements.txt
 
 # Copy only the source code (not the entire repo)
 # Helps avoid bringing in .git, logs, or secrets
