@@ -1,26 +1,41 @@
-FROM python:3.12-alpine3.23
+# Use a specific Python version with Alpine base
+# Pinning ensures reproducibility and avoids surprises when Alpine updates
+FROM python:3.12-alpine
 
-# Metadata
+# Add metadata for maintainability
 LABEL maintainer="amitbhor"
 LABEL version="1.0"
 LABEL description="Demo Python App"
 
-# Set working directory
+# Set working directory (auto-creates /app if it doesn’t exist)
 WORKDIR /app
 
-# Copy source code
-COPY . /app
+# Copy dependency list first for better caching
+# This way Docker only re-installs dependencies if requirements.txt changes
+COPY requirements.txt /app/
 
-# Install dependencies securely (if you have requirements.txt)
-# RUN pip install --no-cache-dir -r requirements.txt
+# Install Python dependencies securely
+# --no-cache-dir prevents caching sensitive files
+RUN pip install --no-cache-dir -r requirements.txt
 
-# Create non-root user
+# Copy only the source code (not the entire repo)
+# Helps avoid bringing in .git, logs, or secrets
+COPY app.py /app/
+COPY src/ /app/src/
+
+# Create a non-root user for security
+# Running as root inside containers is a common vulnerability
 RUN adduser -D appuser
 USER appuser
 
-# Expose port
+# Update Alpine packages to patch vulnerabilities (e.g., OpenSSL CVEs flagged by Trivy)
+RUN apk update && apk upgrade --no-cache
+
+# Expose the application port
 EXPOSE 8080
 
-# Use ENTRYPOINT for clarity
+# Use ENTRYPOINT for clarity (always runs python3)
 ENTRYPOINT ["python3"]
+
+# CMD provides the default argument (runs app.py)
 CMD ["app.py"]
